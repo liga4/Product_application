@@ -15,11 +15,6 @@ class DeleteProductService
     {
         foreach($ids as $id){
             $article = $this->repository->getById($id);
-            if ($article == null)
-            {
-                //throw exception
-                return;
-            }
             $this->repository->delete($article);
         }
     }
