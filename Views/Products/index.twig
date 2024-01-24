@@ -1,0 +1,98 @@
+{% include 'Partials/head.twig' %}
+<form action="/delete-products" method="post" id="deleteForm" onsubmit="return validateAndSubmit()">
+    <div class="min-h-full">
+        <header class="bg-white shadow">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">Product List</h1>
+                <div class="flex items-center">
+                    <a href="/add-product"
+                       class="text-black hover:bg-gray-700 hover:text-gray-300 rounded-md px-3 py-2 font-bold text-28 font-medium">
+                        ADD</a>
+                    <button class="text-black hover:bg-gray-700 hover:text-gray-300 rounded-md px-3 py-2 font-bold text-28 font-medium ml-4"
+                            type="submit">DELETE SELECTED
+                    </button>
+                    <a href="/delete-all-products" id="delete-product-btn"
+                       class="text-black hover:bg-gray-700 hover:text-gray-300 rounded-md px-3 py-2 font-bold text-28 font-medium">
+                        MASS DELETE</a>
+                </div>
+            </div>
+            <div id="warning-message" class="text-red-500 flex justify-end ml-4"></div>
+
+        </header>
+
+        <main class="bg-white py-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+                {% if(products.all is not empty) %}
+                    {% for product in products.all %}
+                        <div class="p-4 bg-gray-100">
+                            <div class="border border-gray-300 rounded-lg overflow-hidden">
+                                <table class="min-w-full bg-gray-100">
+                                    <tbody class="bg-white">
+                                    <tr>
+                                        <td class="p-4 py-2">
+                                            <label class="delete-checkbox" for="delete-checkbox">
+                                                <input type="checkbox" name="delete-checkbox[]" id="delete"
+                                                       value="{{ product.id }}">
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4 py-1 text-center">
+                                            <p>
+                                                {{ product.sku }}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-1 text-center">
+                                            <p>
+                                                {{ product.name }}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-1 text-center">
+                                            <p>
+                                                {{ product.price | number_format(2) }} $
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-1 pb-8 text-center">
+                                            <div id="DvdDisc" class="sm:col-span-4">
+                                                {% include 'Products/DynamicParameters/' ~ product.productType ~ '.twig' %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center mt-4">
+                        <a href="/add-product" class="text-blue-500 hover:underline">Add product</a>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</form>
+<script>
+    function validateAndSubmit() {
+        const checkboxes = document.querySelectorAll('input[name="delete-checkbox[]"]:checked');
+        const warningMessage = document.getElementById('warning-message');
+
+        if (checkboxes.length === 0) {
+            // Display a warning message
+            warningMessage.innerText = 'Please select at least one product to delete.';
+            return false; // Prevent form submission
+        } else {
+            // Clear the warning message
+            warningMessage.innerText = '';
+            return true; // Allow form submission
+        }
+    }
+</script>
+
+{% include 'Partials/footer.twig' %}
